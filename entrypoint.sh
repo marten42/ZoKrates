@@ -37,7 +37,7 @@ function zokrates-generate-proof () {
 }
 
 function zokrates-output () {
-    mv out out.code proving.key verification.key verifier.sol witness proof.json /home/zokrates/output
+    cp out out.code proving.key verification.key verifier.sol witness proof.json /home/zokrates/output
     echo "Output files copied to local directory in the container.
     Mount local volume to replicate the files to local storage."
 }
@@ -66,22 +66,27 @@ case "$1" in
     "compile")
             shift
             zokrates-compile $1
+            cp out out.code /home/zokrates/output
             ;;
     "compute-witness")
             shift
             zokrates-compute-witness $@
+            cp witness /home/zokrates/output
             ;;
     "export-verifier")
             zokrates-export-verifier
+            cp verifier.sol /home/zokrates/output
             ;;
     "generate-proof")
             zokrates-generate-proof
+            cp proof.json /home/zokrates/output
             ;;
     "output")
             zokrates-output
             ;;
     "setup")
             zokrates-setup
+            cp proving.key verification.key /home/zokrates/output
             ;;
     
     *)
