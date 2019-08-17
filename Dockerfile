@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-MAINTAINER JacobEberhardt <jacob.eberhardt@tu-berlin.de>, Thibaut Schaeffer <thibaut@schaeff.fr>
+#MAINTAINER JacobEberhardt <jacob.eberhardt@tu-berlin.de>, Thibaut Schaeffer <thibaut@schaeff.fr>
 
 RUN useradd -u 1000 -m zokrates
 
@@ -22,6 +22,14 @@ WORKDIR /home/zokrates
 
 COPY --chown=zokrates:zokrates . src
 
+COPY --chown=zokrates:zokrates ./entrypoint.sh /home/zokrates/entrypoint.sh
+
+RUN chmod +x /home/zokrates/entrypoint.sh
+
+RUN mkdir /home/zokrates/output
+
+RUN mkdir /home/zokrates/zok_code
+
 RUN mkdir $ZOKRATES_HOME
 
 RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain $RUST_TOOLCHAIN -y \
@@ -32,3 +40,5 @@ RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain $RUST_TOOLCHAI
     && mv ./src/zokrates_stdlib/stdlib/* $ZOKRATES_HOME \
     && rustup self uninstall -y \
     && rm -rf src
+
+ENTRYPOINT [ "/home/zokrates/entrypoint.sh" ]
